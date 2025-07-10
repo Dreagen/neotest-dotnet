@@ -45,6 +45,7 @@ local build_parameterized_test_positions = function(base_node, source, captured_
 
   for _, match in param_query:iter_matches(captured_nodes[match_type .. ".definition"], source) do
     local args_node = match[arguments_index]
+
     local args_text = vim.treesitter.get_node_text(args_node, source):gsub("[()]", "")
 
     nodes[#nodes + 1] = vim.tbl_extend("force", parameterized_test_node, {

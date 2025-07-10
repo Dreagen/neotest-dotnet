@@ -1,5 +1,6 @@
 local async = require("nio").tests
 local plugin = require("neotest-dotnet")
+local test_framework = require("neotest-dotnet.nunit")
 
 A = function(...)
   print(vim.inspect(...))
@@ -11,6 +12,18 @@ describe("discover_positions", function()
       require("neotest-dotnet"),
     },
   })
+
+  async.it("Testing", function()
+    local spec_file = "./tests/nunit/specs/TestCase/TestCase.cs"
+    local positions = plugin.discover_positions(spec_file)
+    local results = test_framework.generate_test_results(
+      "./tests/nunit/specs/TestCase/test_case_restults.trx",
+      positions,
+      "contextid"
+    )
+
+    error(vim.inspect(results))
+  end)
 
   async.it(
     "should discover tests with TestCaseSource attribute without creating nested parameterized tests",
