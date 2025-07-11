@@ -83,6 +83,27 @@ M.build_position = function(file_path, source, captured_nodes)
   local match_type = get_match_type(captured_nodes)
 
   local name = vim.treesitter.get_node_text(captured_nodes[match_type .. ".name"], source)
+
+  -- TODO: Go through with Giulio
+  -- local name_node = captured_nodes[match_type .. ".name"]
+  -- local name
+  -- if name_node and type(name_node) == "userdata" then
+  --   -- Check if the node has the sexpr method using pcall
+  --   local success, result = pcall(function()
+  --     return name_node:sexpr()
+  --   end)
+  --   if success then
+  --     name = result
+  --     print("sexpr call succeeded")
+  --   else
+  --     print("sexpr call failed: " .. tostring(result))
+  --     name = vim.treesitter.get_node_text(captured_nodes[match_type .. ".name"], source)
+  --   end
+  -- else
+  --   print("node is not userdata type")
+  --   name = vim.treesitter.get_node_text(captured_nodes[match_type .. ".name"], source)
+  -- end
+
   local definition = captured_nodes[match_type .. ".definition"]
 
   -- Introduce the C# concept of a "class" to the node, so we can distinguish between a class and a namespace.
@@ -279,13 +300,19 @@ M.generate_test_results = function(output_file_path, tree, context_id)
       end
 
       -- Use the full_name of the test, including namespace
-      local is_match = result_test_name == node_data.full_name
-        or result_test_name:sub(-#node_data.full_name) == node_data.full_name
+      local node_name_no_whitespace = node_data.full_name:gsub("%s+", "")
+      local result_test_name_no_whitespace = result_test_name:gsub("%s+", "")
+
+      local is_match = result_test_name_no_whitespace == node_name_no_whitespace
+        or result_test_name_no_whitespace:sub(-#node_name_no_whitespace)
+          == node_name_no_whitespace
 
       print("custom messages:")
       print(vim.inspect(node_data.full_name))
       print(result_test_name)
       print(is_match)
+      print(node_data.id)
+      print()
 
       if is_match then
         -- For non-inlined parameterized tests, check if we already have an entry for the test.
