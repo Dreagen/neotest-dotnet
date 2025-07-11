@@ -16,10 +16,13 @@ describe("discover_positions", function()
   async.it("Testing", function()
     local spec_file = "./tests/nunit/specs/TestCase/TestCase.cs"
     local positions = plugin.discover_positions(spec_file)
+
+    -- error(vim.inspect(positions))
+
     local results = test_framework.generate_test_results(
-      "./tests/nunit/specs/TestCase/test_case_restults.trx",
+      "./tests/nunit/specs/TestCase/test_case_results.trx",
       positions,
-      "contextid"
+      "contextid123"
     )
 
     error(vim.inspect(results))

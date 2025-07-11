@@ -259,6 +259,9 @@ M.generate_test_results = function(output_file_path, tree, context_id)
   logger.debug("neotest-dotnet: Intermediate Results: ")
   logger.debug(intermediate_results)
 
+  print(vim.inspect(intermediate_results))
+  print(vim.inspect(test_nodes))
+
   local neotest_results = {}
 
   for _, intermediate_result in ipairs(intermediate_results) do
@@ -276,8 +279,13 @@ M.generate_test_results = function(output_file_path, tree, context_id)
       end
 
       -- Use the full_name of the test, including namespace
-      local is_match = #result_test_name == #node_data.full_name
+      local is_match = result_test_name == node_data.full_name
         or result_test_name:sub(-#node_data.full_name) == node_data.full_name
+
+      print("custom messages:")
+      print(vim.inspect(node_data.full_name))
+      print(result_test_name)
+      print(is_match)
 
       if is_match then
         -- For non-inlined parameterized tests, check if we already have an entry for the test.
